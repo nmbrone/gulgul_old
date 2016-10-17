@@ -28,7 +28,7 @@ By default, each tasks (except `build`) will run in "development" environment, b
 
 Tasks `iconfonts`, `svgsprites `, `sprites` can generate multiple sets. For more details look into code, but main idea is: we have a collection of descriptions (simple array). Each item in this collection is a simple js object that describe how set should be named, which of source files need to be included into it, and other specific settings. For each set we also create (automatically) a new namespaced gulp task. For example, if we have two sprite sets with names _"foo"_ and _"bar"_, then we get tasks called `sprites:foo` and `sprites:bar`. 
 
-Almost all task also can be separately runned in watch mode with suffix `:watch` (for example `sprites:watch`, or `scripts:watch`).
+Almost all task also can be individually started in watch mode with suffix `:watch` (for example `sprites:watch`, or `scripts:watch`).
 
 ## SRC and DEST helpers
 
