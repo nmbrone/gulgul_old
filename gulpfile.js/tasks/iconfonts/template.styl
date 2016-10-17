@@ -1,0 +1,47 @@
+@font-face {
+  font-family: "<%= fontName %>";
+  src: url('<%= fontPath %><%= fontName %>.woff2') format('woff2'),
+       url('<%= fontPath %><%= fontName %>.woff') format('woff'),
+       url('<%= fontPath %><%= fontName %>.eot?#iefix') format('eot');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$<%= className %>-map = {
+  <% _.forEach(glyphs, function(glyph) { %>'<%= glyph.name %>': '\<%= glyph.unicode[0].charCodeAt(0).toString(16).toUpperCase() %>',
+  <% }); %>
+}
+
+get-<%= className %>(name)
+  $<%= className %>-map[name]
+
+prepend-<%= className %>(name)
+  &:before
+    @extend $<%= className %>
+    content get-icon(name)
+    {block}
+
+append-<%= className %>(name)
+  &:after
+    @extend $<%= className %>
+    content get-icon(name)
+    {block}
+
+$<%= className %> {
+  font-family: "<%= fontName %>";
+  font-style: normal;
+  font-weight: normal;
+  text-rendering: auto;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.<%= className %> {
+  @extend $<%= className %>;
+  display: inline-block;
+}
+
+<% _.forEach(glyphs, function(glyph) { %>.<%= className %>-<%= glyph.name %>:before { content: get-icon(<%= glyph.name %>); }
+<% }); %>

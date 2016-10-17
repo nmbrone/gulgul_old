@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>SVG Sprite Preview</title>
+  <style type="text/css" media="all">
+
+    h1 {
+      text-align: center;
+    }
+
+    .icons-list {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      font-size: 0;
+      text-align: center;
+    }
+
+    .icons-list > .icon-box {
+      display: inline-block;
+      vertical-align: middle;
+      min-width: 200px;
+      min-height: 200px;
+      padding: 20px;
+      border-radius: 5px;
+    }
+
+    .icon-container {
+      min-height: 170px;
+      text-align: center;
+      font-size: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #CCC;
+      border-radius: 5px;
+      box-shadow: inset 0 0 3px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    input:not([type=range]):not([type=color]) {
+      display: inline-block;
+      vertical-align: top;
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 12px;
+      border-radius: 5px;
+      height: 30px;
+      padding: 0;
+      text-align: center;
+      border: 1px solid #CCC;
+      box-shadow: inset 0 0 3px 0 rgba(0, 0, 0, 0.2);
+      -webkit-appearance: none;
+    }
+
+    .configure {
+      display: flex;
+      flex-direction: column;
+      max-width: 300px;
+      margin: auto;
+    }
+
+    .configure > label input {
+      display: block;
+      width: 100%;
+    }
+
+    .color-select {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .icon-class-name {
+      width: 70%;
+    }
+
+    .icon-unicode {
+      width: 30%;
+    }
+
+    <% _.forEach(icons, function(icon) { %>.<%= icon.name %> {
+      width: <%= icon.ratio %>em;
+      height: 1em;
+    }
+    <% }); %>
+  </style>
+</head>
+<body>
+<h1>Icons: <span id="count"></span></h1>
+
+<div class="configure">
+  <label>
+    <span>Size: <b><output for="size" id="size-value">100</output></b>px</span>
+    <input type="range" id="size" value="100" min="6" max="1000">
+  </label>
+
+  <label>
+    Search: <input type="text" id="search">
+  </label>
+
+  <div>
+    <label class="color-select">
+      <span>Color primary:&nbsp;</span>
+      <input type="color" id="color-primary">
+    </label>
+    <label class="color-select">
+      <span>Color secondary:&nbsp;</span>
+      <input type="color" id="color-secondary" value="#CCCCCC">
+    </label>
+    <label class="color-select">
+      <span>Color background:&nbsp;</span>
+      <input type="color" id="color-bg" value="#FFFFFF">
+    </label>
+  </div>
+</div>
+
+<ul class="icons-list">
+  <% _.forEach(icons, function(icon) { %>
+  <li class="icon-box" data-icon="<%= icon.name %>">
+    <input class="icon-class-name autoselect" type="text" value=".<%= icon.name %>" readonly>
+    <div class="icon-container">
+      <svg class="icon <%= icon.name %>">
+        <use xlink:href="<%= spritePath  %><%= spriteName  %>.svg#<%= icon.name %>"></use>
+      </svg>
+    </div>
+  </li>
+  <% }) %>
+</ul>
+
+<script>
+  var get            = document.querySelector.bind(document);
+  var getAll         = document.querySelectorAll.bind(document);
+  var slice          = Array.prototype.slice;
+  var change         = get('#size');
+  var colorPrimary   = get('#color-primary');
+  var colorSecondary = get('#color-secondary');
+  var colorBg        = get('#color-bg');
+  var changeVal      = get('#size-value');
+  var count          = get('#count');
+  var autoselect     = slice.call(getAll('.autoselect'));
+  var icons          = slice.call(getAll('.icon'));
+  var boxes          = slice.call(getAll('li.icon-box'));
+
+  autoselect.forEach(function(el) {
+    el.onclick = function() {
+      this.focus();
+      this.select();
+    };
+  });
+
+  change.oninput = function() {
+    var val = this.value;
+    changeVal.value = val;
+    icons.forEach(function(el) {
+      el.style.fontSize = val + 'px';
+    });
+  };
+
+  colorPrimary.onchange = function() {
+    var val = this.value;
+    icons.forEach(function(el) {
+      el.style.fill = val;
+    });
+  };
+
+  colorSecondary.onchange = function() {
+    var val = this.value;
+    icons.forEach(function(el) {
+      el.style.color = val;
+    });
+  };
+
+  colorBg.onchange = function() {
+    var val = this.value;
+    icons.forEach(function(el) {
+      el.parentNode.style.background = val;
+    });
+  };
+
+  search.oninput = function() {
+    var val = this.value;
+    boxes.forEach(function(box) {
+      box.style.display = 'none';
+    });
+    boxes.filter(function(box) {
+      return box.dataset.icon.indexOf(val) > -1;
+    }).forEach(function(box) {
+      box.style.display = '';
+    });
+  };
+
+  colorPrimary.onchange();
+  colorSecondary.onchange();
+
+  count.innerHTML = icons.length;
+</script>
+</body>
+</html>
