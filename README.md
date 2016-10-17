@@ -1,4 +1,4 @@
-#  Assets builder
+#  Asset builder
 
 **node** v6+ is required
 
